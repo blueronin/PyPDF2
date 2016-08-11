@@ -1,9 +1,4 @@
-﻿Version 1.25, 2016-08-11
-------------------------
- - Add support for PNG filter type 3, 4(Average, Paeth)
-
-
-Version 1.24, 2014-12-31
+﻿Version 1.24, 2014-12-31
 ------------------------
 
  - Bugfixes for reading files in Python 3 (by Anthony Tuininga and
