@@ -33,7 +33,7 @@ Implementation of stream filters for PDF.
 """
 __author__ = "Mathieu Fenniak"
 __author_email__ = "biziqe@mathieu.fenniak.net"
-
+import math
 from .utils import PdfReadError, ord_, chr_
 from sys import version_info
 if version_info < ( 3, 0 ):
@@ -136,6 +136,30 @@ class FlateDecode(object):
                     elif filterByte == 2:
                         for i in range(1, rowlength):
                             rowdata[i] = (rowdata[i] + prev_rowdata[i]) % 256
+                    elif filterByte == 3:
+                        for i in range(2, rowlength):
+                            floor = math.floor(rowdata[i-1] + prev_rowdata[i])/2
+                            rowdata[i] = (rowdata[i] + int(floor)) % 256
+                    elif filterByte == 4:
+                        def paethPredictor(a, b, c):
+                            p = a + b - c
+                            pa = abs(p - a)
+                            pb = abs(p - b)
+                            pc = abs(p - c)
+
+                            if pa <= pb and pa <= pc:
+                                return a
+                            elif pb <= pc:
+                                return b
+                            else:
+                                return c
+
+                        for i in range(2, rowlength):
+                            a = rowdata[i - 1]
+                            b = prev_rowdata[i]
+                            c = prev_rowdata[i - 1]
+                            paeth = paethPredictor(a, b, c)
+                            rowdata[i] = (rowdata[i] + paeth) % 256
                     else:
                         # unsupported PNG filter
                         raise PdfReadError("Unsupported PNG filter %r" % filterByte)
