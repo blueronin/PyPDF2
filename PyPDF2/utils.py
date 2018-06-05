@@ -117,7 +117,7 @@ def skipOverComment(stream):
             tok = stream.read(1)
 
 
-def readUntilRegex(stream, regex, ignore_eof=False):
+def readUntilRegex(stream, regex, ignore_eof=True):
     """
     Reads until the regular expression pattern matched (ignore the match)
     Raise PdfStreamError on premature end-of-file.
